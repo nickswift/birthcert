@@ -1,36 +1,37 @@
 module Birthcert
   class Name
+    # note -- we can guarantee the names will be in a certain range by simply
+    # reading a set number of lines from the name files into memory and
+    # using that as the data set
+    def initialize(size=500)
+      @size = size
+      @first_names = Array.new
+      @last_names = Array.new
 
-    @first_names = %w(
-      thomas amy joseph alex guy minnie james ben ted lisa bonnie robert cindy 
-      wendy gloria rodney rita ian stella arnold jared calvin brent tom roland 
-      isaac connie tyrone kurt julian maria sue erik joy curtis julia warren 
-      dawn tony andrea ruben corey marcus tracy harvey darren annie lester allen 
-      nancy jesse jim janet linda betty susan floyd hector anna virgil teresa 
-      karen todd lloyd derek pedro bob helen shane lucy casey bill tara tyler 
-      carmen kathy david rose beth john norman mary 
-    )
+      # read data out of files that come with this gem
+      fpat = File.expand_path('../data/first_names.txt', __FILE__)
+      lpat = File.expand_path('../data/last_names.txt', __FILE__)
 
-    @last_names = %w(
-      foster miller scott young james lewis ross murphy cruz baker adams cole 
-      webb ward wilson russel graham jones smith allen hayes parker rivera owens 
-      cook fisher rogers hill hall bryant ward white brown long nelson lee 
-      morgan howard reed baily clark ford king carter jordan flores hughes 
-      myers wood ellis bell turner kelly west barnes watson butler green west 
-      evans moore morris wright perez hicks henry perry hayes price taylor 
-      walker gray powell davis brooks cole
-    )
-
-    def self.random_first
-      return @first_names.sample(1)
+      File.open(fpat, 'r').each_line do |line|
+        @first_names << line.chomp
+      end
+      File.open(lpat, 'r').each_line do |line|
+        @last_names << line.chomp
+      end
     end
 
-    def self.random_last
-      return @last_names.sample(1)
+    # get random first and last names from the data set
+    def first(amount=1)
+      return @first_names.sample(amount)
+    end
+    def last(amount=1)
+      return @last_names.sample(amount)
     end
 
-    def self.random_full
-      return "#{self.random_first()} #{self.random_last()}"
+    # when getting a full name, we can specify if and when we don't want to
+    # separate them with whitespace, ie. "first-last"
+    def full(sep=' ')
+      return "#{@first_names.sample(1).pop}#{sep}#{@last_names.sample(1).pop}"
     end
   end
 end
